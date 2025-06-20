@@ -1,0 +1,180 @@
+$date
+	Sun May 25 19:04:21 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ns
+$end
+$scope module command_mod_tb $end
+$var wire 16 ! text_data [15:0] $end
+$var wire 1 " text_ce $end
+$var wire 12 # text_addr [11:0] $end
+$var wire 8 $ data_out [7:0] $end
+$var reg 4 % addr [3:0] $end
+$var reg 1 & ce $end
+$var reg 1 ' cpu_clock $end
+$var reg 8 ( data_in [7:0] $end
+$var reg 1 ) reset $end
+$var reg 1 * rw $end
+$scope module U0 $end
+$var wire 4 + addr [3:0] $end
+$var wire 1 & ce $end
+$var wire 1 ' cpu_clock $end
+$var wire 8 , data_in [7:0] $end
+$var wire 1 ) reset $end
+$var wire 1 * rw $end
+$var wire 1 " text_enable $end
+$var wire 16 - text_data [15:0] $end
+$var wire 12 . text_addr [11:0] $end
+$var parameter 32 / ARG0_REG $end
+$var parameter 32 0 ARG1_REG $end
+$var parameter 32 1 ARG2_REG $end
+$var parameter 32 2 ARG3_REG $end
+$var parameter 32 3 CMD_REG $end
+$var reg 8 4 arg0 [7:0] $end
+$var reg 8 5 arg1 [7:0] $end
+$var reg 8 6 arg2 [7:0] $end
+$var reg 8 7 arg3 [7:0] $end
+$var reg 8 8 cmd [7:0] $end
+$var reg 12 9 cursor_pos [11:0] $end
+$var reg 12 : cursor_pos_next [11:0] $end
+$var reg 8 ; data_out [7:0] $end
+$var reg 1 < text_ce $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b0 3
+b100 2
+b11 1
+b10 0
+b1 /
+$end
+#0
+$dumpvars
+0<
+bx ;
+b1 :
+b0 9
+b0 8
+b0 7
+b0 6
+b0 5
+b0 4
+b111111111111 .
+b0 -
+b0 ,
+b0 +
+0*
+1)
+b0 (
+0'
+0&
+b0 %
+bx $
+b111111111111 #
+0"
+b0 !
+$end
+#5
+0)
+#15
+1*
+1&
+#20
+1'
+#25
+0'
+#30
+b10100000 (
+b10100000 ,
+b1 %
+b1 +
+#35
+b10 :
+1"
+1<
+b0 #
+b0 .
+b1 9
+b1010000000000000 !
+b1010000000000000 -
+b10100000 4
+1'
+#40
+0'
+#45
+b10100001 (
+b10100001 ,
+#50
+b11 :
+b1 #
+b1 .
+b10 9
+b1010000100000000 !
+b1010000100000000 -
+b10100001 4
+1'
+#55
+b1 (
+b1 ,
+b0 %
+b0 +
+0'
+#60
+0"
+0<
+b1 8
+1'
+#65
+0'
+#70
+b10100 (
+b10100 ,
+b11 %
+b11 +
+#75
+b10100 6
+1'
+#80
+0'
+#85
+b1111 (
+b1111 ,
+b100 %
+b100 +
+#90
+b1111 7
+1'
+#95
+0'
+#105
+b10100010 (
+b10100010 ,
+b1 %
+b1 +
+#110
+b11001010000 :
+1"
+1<
+b11001001110 #
+b11001001110 .
+b11001001111 9
+b1010001000000000 !
+b1010001000000000 -
+b10100010 4
+1'
+#115
+0'
+#120
+0*
+0&
+#125
+0"
+0<
+1'
+#130
+0'
