@@ -1,0 +1,60 @@
+Hi, I would like to design a video adapter similar to an old VGA card for a Gowin GW2AR-18 FPGA. The code will be in Verilog. 
+Video Features: 
+- 3 video modes: hi res 640x480x4 color, low res 320x240x16 color, and a 80x30 text mode
+- I would like color to be represented in memory as a 4 bit index. There would be a 16 color palette internally that maps this index to a 6 bit output to a simple DAC. The first 4 colors are 0=black, 1=white, 2=bright green (001100), and 3=dark green (000100)
+- The 640x480 video mode will only have 2 bit color indexes, storing 4 pixels per byte in video memory. The two bit indexes will refer to the first four colors of the palette. This mode only has 1 page. 
+- The 320x240 video mode will have 4 bit color indexes, storying 2 pixels per byte in video memory. This mode will have two pages for double buffering. 
+- Both video modes will share the same 76,800 bytes of video ram, which will utilized clocked block ram.  
+- The text mode will use an 8x16 pixel font which I will provide as a memory file. 
+- The text mode will have 16 bits per character, with the low byte being the character code and the high byte split between two 4-bit color indexes for foreground and background.
+
+Control Interface: 
+- The CPU facing interface will be up to 16 8-bit registers $0000-$000F.
+- We will need a register for picking video modes, as well as the working and active page for 320x240 graphics mode. This should be $0000
+- We will need a register for returning status for instructions that take multiple steps. In the future reading this might also be used to clear interrupts. This will be register $0001
+- Register $0002 will be the instruction register. Every action we can take with the video card will correspond to an instruction byte.
+- Registers $0003-$0008 will be argument registers, who's purpose changes depending on what the current instruction is.
+- Writing to a key register will start the instruction, usually this is register $0004.
+- When appropriate, reading a pixel, character, or color data register will look that value up from memory based on the position or address arguments set. This doesn't make sense for complex or write only instructions. 
+- The initial instructions to implement are: 
+	- $00: Clear screen. Clears the screen with the background color provided in the argument. Write only. In text mode, overwrites all entries in character memory to $00, the foreground color to the 0, and the background color to the low 4 bits of the background color argument. In a video mode, this sets all the values in the video page that is currently writable to the background color. 
+		- The first argument is the background color index in $0003. When this value is updated, the instruction is executed.   
+	- $01: Read/Write Pixel X/Y. Writes a color index value to the current active video memory at the provided x & y coordinates. Ignored if text mode
+		- The first argument is the color index byte in $0003. When this value is updated, the instruction is executed. 
+		- The second argument is the high byte of the X coordinate in $0004
+		- The third argument is the low byte of the X coordinate in $0005
+		- The fourth argument is the high byte of the Y coordinate in $0006
+		- The fifth argument is the low byte of the Y coordinate in $0007
+	- $02: Read/Write Pixel Absolute. Writes a color index to the 24-bit video memory address provided. Address is relative to the start of the page. Ignored if in text mode. 
+		- The first argument is the color index byte in $0003. When this value is updated, the instruction is executed. 
+		- The second argument is high byte of a 24 bit address in $0004
+		- The third argument is the mid byte of a 24 bit address in $0005
+		- The fourth argument is the low byte of a 24 bit address in $0006
+	- $03: Write Pixel Relative. Increment the last address a pixel was written to and then write the color index provided in argument 1. Used to quickly draw a row of pixels without having to update position arguments. Write Only. Ignore if in text mode. 
+	 	- The first argument is the color index byte in $0003. When this value is updated, the instruction is executed.
+	- $04: Read/Write Char Row/Col. Writes a character code and color information to a position in text memory. Ignore if in video mode. 
+		- The first arg is character code. $0003. When this value is updated, the instruction is executed. 
+		- The second arg is color info. foreground color is the high nibble while background is low. $0004. 
+		- The third arg is row position. $0005
+		- The fourth arg is column position. $0006
+	- $05: Read/Write Char Offset. Writes a character code and color information to an address in text memory. Ignore if in video mode. 
+		- The first arg is character code. $0003. When this value is updated, the instruction is executed. 
+		- The second arg color info. foreground color is the high nibble while background is low. $0004.
+		- The third arg is high byte of the target character memory address. $0005
+		- The fourth arg is the low byte of the target character memory address. $0006
+	- $06: Write Char Relative. Increment the memory address from the last char write and then writes the character code and color information to this next address. Write Only. Used to for efficiently appending characters. Ignore if in video mode. 
+		- The first arg is character code. $0003. When this value is updated, the instruction is executed. 
+		- The second arg color info. foreground color is the high nibble while background is low. $0004. 
+
+Hardware considerations: 
+- This card will talk to a bus connected to a 6502 processor. 
+- The bus consists of:
+	- A 4 bit address
+	- An 8 bit bidirectional data bus
+	- A cpu clock signal at 1 MHz
+	- A read-write signal where CPU read = 1 and write = 0
+	- An active low reset signal 
+	- Two chip enable signals, ce0 and ce1b, where active is true when ce0=1 and ce1b=0.
+- This card will output vga signal components consisting of an hsync, vsync, 2 bits for red, 2 bits for green and 2 bits for blue. 
+- The video circuit will be operating at a standard 25.175 MHz clock 
+- The gowin FPGA would ideally use block ram for video memory, character memory, and the font rom. Because block ram is clocked, the text mode part design will need to be pipelined. This is because we must look up multiple dependent values before we can render text and we can only look up one stage per video clock cycle. The pipelining will need to consider edge cases around the character on each line, especially the first character drawn to the screen after the vertical blanking, as the pipeline prefetch will need to be done in the blanking periods that precede it.   
