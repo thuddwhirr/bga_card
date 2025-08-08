@@ -40,57 +40,57 @@ Control Interface:
 	- TextWrite: $00 
 		- Description: Writes a character to the screen at the current cursor position. Cursor position is incremented by one to the right after each write. If a write is to a cursor position below the bottom of the screen, scroll the screen up 1 row. 
 		- Arguments: 
-			- $0003: The character properties byte. (background color, foreground color, blink)  
-			- $0004: The charactor code to write - Execute instruction on update. 
+			- $0002: The character properties byte. (background color, foreground color, blink)  
+			- $0003: The character code to write - Execute instruction on update. 
 	- TextPosition: $01
 		- Description: Moves the cursor to a new row/column, relative to the current scroll state. (row 0, col 0 is always the most upper left visible position)
 		- Arguments: 
-			- $0003: The row to change the cursor to. 
-			- $0004: The column to change the cursor to - Execute instruction on update.  
+			- $0002: The row to change the cursor to. 
+			- $0003: The column to change the cursor to - Execute instruction on update.  
 	- TextClear: $02
-		- Description: Set all charecters in the text buffer to null with the provided character properties
+		- Description: Set all characters in the text buffer to null with the provided character properties
 		- Arguments: 
-			- $0003: The character properties to set all values of the buffer to - Execute instruction on update.
+			- $0002: The character properties to set all values of the buffer to - Execute instruction on update.
 	- GetTextAt: $03
 		- Description: Get the character code and formatting data at a row and column and store it in the output registers. 
 		- Arguments:
-			- $0003: The row to change the cursor to. 
-			- $0004: The column to change the cursor to - Execute instruction on update.
+			- $0002: The row to change the cursor to. 
+			- $0003: The column to change the cursor to - Execute instruction on update.
 		- Output: 
-			- $000E: The charecter code at provided position
-			- $000F: The formatting at provided position
+			- $000D: The character code at provided position
+			- $000E: The formatting at provided position
 	- WritePixel: $04
 		- Description: Write a pixel to the currently active mode and page at the pixel cursor. Increment the cursor one pixel to the right after each execution. Bitmask the provided byte appropriatly for the active video mode. For example, in 2 color mode, apply bitmask 00000001 to the data argument and only update video memory with the bit-0 value. In 4 color mode, apply bitmask 00000011, and only apply bits 0 & 1, etc. 
 		- Arguments: 
-			- $0003: The color index or pixel data to write to the pixel cursor position. - Execute instruction on update.
+			- $0002: The color index or pixel data to write to the pixel cursor position. - Execute instruction on update.
 	- PixelPos: $05
 		- Description: Set the pixel cursor position to a new X/Y. 
 		- Arguments: 
-			- $0003: X position high-byte
-			- $0004: X position low-byte
-			- $0005: Y position high-byte
-			- $0006: Y position low-byte - Execute instruction on update.
+			- $0002: X position high-byte
+			- $0003: X position low-byte
+			- $0004: Y position high-byte
+			- $0005: Y position low-byte - Execute instruction on update.
 	- WritePixelPos: $06
-		- Description: Combination of WritePixel and PixelPos. Move the pixel cursor postion, write data to it, and then move pixel cursor 1 to the right. 
+		- Description: Combination of WritePixel and PixelPos. Move the pixel cursor position, write data to it, and then move pixel cursor 1 to the right. 
 		- Arguments: 
-			- $0003: X position high-byte
-			- $0004: X position low-byte
-			- $0005: Y position high-byte
-			- $0006: Y position low-byte
-			- $0007: The color index or pixel data to write to the pixel cursor position. - Execute instruction on update.
+			- $0002: X position high-byte
+			- $0003: X position low-byte
+			- $0004: Y position high-byte
+			- $0005: Y position low-byte
+			- $0006: The color index or pixel data to write to the pixel cursor position. - Execute instruction on update.
 	- ClearScreen: $07
 		- Description: Clear the current active screen memory to the provided color/index. 
 		- Arguments: 
-			- $0003: color/color index - Execute instruction on update.
+			- $0002: color/color index - Execute instruction on update.
 	- GetPixelAt: $08
-		- Description: Return the pixel value at the provided X/Y. Appropriatly mask the output value based on mode.
+		- Description: Return the pixel value at the provided X/Y. Appropriately mask the output value based on mode.
 		- Arguments: 
-			- $0003: X position high-byte
-			- $0004: X position low-byte
-			- $0005: Y position high-byte
-			- $0006: Y position low-byte - Execute instruction on update.
+			- $0002: X position high-byte
+			- $0003: X position low-byte
+			- $0004: Y position high-byte
+			- $0005: Y position low-byte - Execute instruction on update.
 		- Output: 
-			- $000E: The pixel data at the provided X/Y. (1,2,4 or 8 bit value based on video mode)
+			- $000D: The pixel data at the provided X/Y. (1,2,4 or 8 bit value based on video mode)
 
 	
 	
